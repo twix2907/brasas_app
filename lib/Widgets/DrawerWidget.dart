@@ -40,6 +40,31 @@ class DrawerWidget extends StatelessWidget {
 
             },
           ),
+          // Añade un divisor
+          Divider(
+            color: Colors.grey,
+            thickness: 1,
+          ),
+          
+          // Añade la opción de cerrar sesión
+          ListTile(
+            leading: Icon(
+              CupertinoIcons.square_arrow_left, // o puedes usar Icons.logout
+              color: Color.fromARGB(255, 218, 160, 0),
+            ),
+            title: Text(
+              'Cerrar sesión',
+              style: TextStyle(
+                fontSize: 18, 
+                fontWeight: FontWeight.bold,
+                color: Color.fromARGB(255, 218, 160, 0),
+              ),
+            ),
+            onTap: () {
+              // No navegamos a una nueva pantalla, sino que ejecutamos la función
+              cerrarSesion(context);
+            },
+          ),
         ],
       ),
     );

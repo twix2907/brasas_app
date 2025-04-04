@@ -3,8 +3,12 @@ import 'package:app_pedidos/Pages/ItemPage.dart';
 import 'package:app_pedidos/Pages/RegistrarProducto.dart';
 import 'package:app_pedidos/Widgets/scafol.dart';
 import 'package:app_pedidos/providers/carrito_provider.dart';
+import 'package:app_pedidos/screens/login_screen.dart';
+import 'package:app_pedidos/screens/recover_password_screen.dart';
+import 'package:app_pedidos/screens/register_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';
 import 'Pages/InventarioPage.dart';
@@ -29,13 +33,41 @@ class MyApp extends StatelessWidget{
       theme: ThemeData(
         scaffoldBackgroundColor: Colors.amberAccent
       ),
-        home: scafol(),
+      home: StreamBuilder(
+        stream: FirebaseAuth.instance.authStateChanges(),
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.active) {
+            if (snapshot.hasData) {
+              // Usuario autenticado
+              return scafol();
+            } else {
+              // Usuario no autenticado
+              return LoginScreen();
+            }
+          }
+          // Mientras verifica, muestra un indicador de carga
+          return Scaffold(
+            backgroundColor: Color(0xFF040404),
+            body: Center(
+              child: CircularProgressIndicator(
+                color: Color(0xFFF5D321),
+              ),
+            ),
+          );
+        }
+      ),
       routes: {
         
         "cartPage": (context) => InventarioPage(),
         "itemPage": (context) => ItemPage(imagen: '',),
         "regis": (context) => ProductForm(),
-        "carrito":(context) => carritoScreen()
+        "carrito":(context) => carritoScreen(),
+
+        // Nuevas rutas para autenticación
+        "/login": (context) => LoginScreen(),
+        "/register": (context) => RegisterScreen(), // Debes crear esta pantalla
+        "/recover-password": (context) => RecoverPasswordScreen(), // Debes crear esta pantalla
+        "/home": (context) => scafol(),
       },
     );
   }
